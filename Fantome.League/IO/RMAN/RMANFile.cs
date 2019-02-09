@@ -30,6 +30,7 @@ namespace Fantome.Libraries.League.IO.RMAN
                 uint uncompressedFileSize = br.ReadUInt32();
 
                 byte[] uncompressedFile = Compression.DecompressZStandard(br.ReadBytes((int)compressedFileSize));
+                byte[] unknownData = br.ReadBytes(256);
             }
         }
     }
