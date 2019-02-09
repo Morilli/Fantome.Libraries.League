@@ -25,6 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Fantome.Libraries.League.IO.WorldDescription;
+using Fantome.Libraries.League.IO.RMAN;
 
 namespace Fantome.Libraries.League.Tests
 {
@@ -32,7 +33,7 @@ namespace Fantome.Libraries.League.Tests
     {
         static void Main(string[] args)
         {
-            BINTest();
+            RMANTest();
         }
 
         static void WGEOTest()
@@ -203,6 +204,11 @@ namespace Fantome.Libraries.League.Tests
         {
             WorldDescriptionFile dsc = new WorldDescriptionFile("room.dsc");
             dsc.Write("room.kek.dsc");
+        }
+
+        static void RMANTest()
+        {
+            RMANFile rman = new RMANFile("281FEB903BACE389.manifest");
         }
     }
 }
