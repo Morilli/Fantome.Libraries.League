@@ -13,12 +13,15 @@ namespace Fantome.Libraries.League.IO.RMAN
         {
             using (BinaryReader br = new BinaryReader(new MemoryStream(data)))
             {
-                for (int i = 0; i < 6; i++)
+                uint section1Length = br.ReadUInt32();
+                ushort[] section1UnknownShorts = new ushort[(section1Length - 4) / 2];
+
+                for (int i = 0; i < (section1Length - 4) / 2; i++)
                 {
-                    int length = br.ReadInt32();
-                    Console.WriteLine(length);
-                    br.ReadBytes(length);
+                    section1UnknownShorts[i] = br.ReadUInt16();
                 }
+
+                uint section1Unknown = br.ReadUInt32();
             }
         }
     }
