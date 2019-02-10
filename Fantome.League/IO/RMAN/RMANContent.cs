@@ -22,6 +22,52 @@ namespace Fantome.Libraries.League.IO.RMAN
                 }
 
                 uint section1Unknown = br.ReadUInt32();
+
+                //---------------------------------------------------------------
+
+                uint section2Length = br.ReadUInt32();
+                uint[] section2Offsets = new uint[section2Length / 4];
+
+                for (int i = 0; i < section2Length / 4; i++)
+                {
+                    section2Offsets[i] = br.ReadUInt32();
+                }
+
+                //---------------------------------------------------------------
+
+                uint section3Length = br.ReadUInt32();
+                uint[] section3Offsets = new uint[section3Length / 4];
+
+                for (int i = 0; i < section3Length / 4; i++)
+                {
+                    section3Offsets[i] = br.ReadUInt32();
+                }
+
+                //---------------------------------------------------------------
+
+                uint section4Length = br.ReadUInt32();
+                byte[] section4Unknown1 = br.ReadBytes((int)section4Length - 4);
+                uint section4Unknown2 = br.ReadUInt32();
+
+                //---------------------------------------------------------------
+
+                long section5Position = br.BaseStream.Position;
+                uint section5Length = br.ReadUInt32();
+                uint[] section5Offsets = new uint[section5Length / 4];
+
+                for (int i = 0; i < section5Length / 4; i++)
+                {
+                    section5Offsets[i] = br.ReadUInt32();
+                }
+
+                //---------------------------------------------------------------
+
+                uint unknown1 = br.ReadUInt32();
+                uint unknown2 = br.ReadUInt32();
+                ulong unknown3Hash = br.ReadUInt64();
+
+
+                
             }
         }
     }
