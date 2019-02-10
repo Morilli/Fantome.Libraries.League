@@ -35,6 +35,7 @@ namespace Fantome.Libraries.League.IO.RMAN
 
                 //---------------------------------------------------------------
 
+                long section3Position = br.BaseStream.Position;
                 uint section3Length = br.ReadUInt32();
                 uint[] section3Offsets = new uint[section3Length / 4];
 
@@ -53,20 +54,20 @@ namespace Fantome.Libraries.League.IO.RMAN
 
                 long section5Position = br.BaseStream.Position;
                 uint section5Length = br.ReadUInt32();
-                uint[] section5Offsets = new uint[section5Length / 4];
+                uint[] section5Offsets = new uint[(section5Length - 4) / 4];
 
-                for (int i = 0; i < section5Length / 4; i++)
+                for (int i = 0; i < (section5Length - 4) / 4; i++)
                 {
                     section5Offsets[i] = br.ReadUInt32();
                 }
 
                 //---------------------------------------------------------------
 
-                uint unknown1 = br.ReadUInt32();
-                uint unknown2 = br.ReadUInt32();
-                ulong unknown3Hash = br.ReadUInt64();
-
-
+                List<RMANUnknownEntry> unknownStructs1 = new List<RMANUnknownEntry>();
+                for(int i = 0; i < section5Offsets.Length; i++)
+                {
+                    unknownStructs1.Add(new RMANUnknownEntry(br));
+                }
                 
             }
         }
