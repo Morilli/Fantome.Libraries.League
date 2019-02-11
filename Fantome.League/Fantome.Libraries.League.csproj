@@ -129,6 +129,7 @@
     <Compile Include="IO\RMAN\RMANContent.cs" />
     <Compile Include="IO\RMAN\RMANFile.cs" />
     <Compile Include="IO\RMAN\RMANUnknownEntry.cs" />
+    <Compile Include="IO\RMAN\RMANUnknownSector.cs" />
     <Compile Include="IO\SCB\SCBFace.cs" />
     <Compile Include="IO\SCB\SCBFile.cs" />
     <Compile Include="IO\SCO\SCOFace.cs" />

@@ -9,6 +9,8 @@ namespace Fantome.Libraries.League.IO.RMAN
 {
     public class RMANContent
     {
+        public List<RMANUnknownSector> UnknownSectors { get; private set; } = new List<RMANUnknownSector>();
+
         public RMANContent(byte[] data)
         {
             using (BinaryReader br = new BinaryReader(new MemoryStream(data)))
@@ -34,8 +36,8 @@ namespace Fantome.Libraries.League.IO.RMAN
 
                 //---------------------------------------------------------------
 
-                long section3Position = br.BaseStream.Position;
                 uint section3OffsetCount = br.ReadUInt32();
+                long section3Position = br.BaseStream.Position;
                 uint[] section3Offsets = new uint[section3OffsetCount];
 
                 for (int i = 0; i < section3OffsetCount; i++)
@@ -45,24 +47,11 @@ namespace Fantome.Libraries.League.IO.RMAN
 
                 //---------------------------------------------------------------
 
-                int section4Unknown1 = br.ReadInt32();
-                uint section4Length = br.ReadUInt32();
-                byte[] section4Unknown2 = br.ReadBytes((int)section4Length - 4);
-                uint section5OffsetsCount = br.ReadUInt32();
-                long section5Position = br.BaseStream.Position;
-                uint[] section5Offsets = new uint[section5OffsetsCount];
+                uint section4Unknown1 = br.ReadUInt32();
 
-                for (int i = 0; i < section5OffsetsCount; i++)
+                for(int i = 0; i < section3OffsetCount; i++)
                 {
-                    section5Offsets[i] = br.ReadUInt32();
-                }
-
-                //---------------------------------------------------------------
-
-                List<RMANUnknownEntry> unknownStructs1 = new List<RMANUnknownEntry>();
-                for(int i = 0; i < section5Offsets.Length; i++)
-                {
-                    unknownStructs1.Add(new RMANUnknownEntry(br));
+                    this.UnknownSectors.Add(new RMANUnknownSector(br));
                 }
                 
             }
