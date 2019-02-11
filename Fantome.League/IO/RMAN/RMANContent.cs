@@ -16,7 +16,7 @@ namespace Fantome.Libraries.League.IO.RMAN
             using (BinaryReader br = new BinaryReader(new MemoryStream(data)))
             {
                 uint section1Length = br.ReadUInt32();
-                ushort[] section1UnknownShorts = new ushort[section1Length];
+                ushort[] section1UnknownShorts = new ushort[section1Length / 2];
 
                 for (int i = 0; i < section1Length / 2; i++)
                 {
@@ -47,11 +47,15 @@ namespace Fantome.Libraries.League.IO.RMAN
 
                 //---------------------------------------------------------------
 
-                uint section4Unknown1 = br.ReadUInt32();
-
                 for(int i = 0; i < section3OffsetCount; i++)
                 {
+                    br.BaseStream.Seek(section3Offsets[i] + section3Position + i *4, SeekOrigin.Begin);
                     this.UnknownSectors.Add(new RMANUnknownSector(br));
+
+                    if(i == 273)
+                    {
+
+                    }
                 }
                 
             }

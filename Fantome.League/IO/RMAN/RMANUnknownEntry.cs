@@ -9,6 +9,7 @@ namespace Fantome.Libraries.League.IO.RMAN
 {
     public class RMANUnknownEntry
     {
+        public long Offset { get; private set; }
         public ulong Unknown1Hash { get; private set; }
         public uint Unknown2Offset { get; private set; }
         public uint Unknown3Offset { get; private set; }
@@ -17,11 +18,12 @@ namespace Fantome.Libraries.League.IO.RMAN
 
         public RMANUnknownEntry(BinaryReader br)
         {
+            this.Offset = br.BaseStream.Position;
             this.Unknown1Hash = br.ReadUInt32();
             this.Unknown2Offset = br.ReadUInt32();
             this.Unknown3Offset = br.ReadUInt32();
             this.Unknown4Hash = br.ReadUInt64();
-            this.Unknown5 = br.ReadUInt32();
+            //this.Unknown5 = br.ReadUInt32();
         }
     }
 }
