@@ -49,15 +49,21 @@ namespace Fantome.Libraries.League.IO.RMAN
 
                 for(int i = 0; i < section3OffsetCount; i++)
                 {
-                    br.BaseStream.Seek(section3Offsets[i] + section3Position + i *4, SeekOrigin.Begin);
+                    br.BaseStream.Seek(section3Offsets[i] + section3Position + i * 4, SeekOrigin.Begin);
                     this.UnknownSectors.Add(new RMANUnknownSector(br));
-
-                    if(i == 273)
-                    {
-
-                    }
                 }
-                
+
+                //---------------------------------------------------------------
+
+                uint section4Count = br.ReadUInt32();
+                uint[] section4Numbers = new uint[section4Count];
+
+                for(int i = 0; i < section4Count; i++)
+                {
+                    section4Numbers[i] = br.ReadUInt32();
+                }
+
+
             }
         }
     }
