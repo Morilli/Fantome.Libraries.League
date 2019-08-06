@@ -209,7 +209,7 @@ namespace Fantome.Libraries.League.Tests
         static void RMANTest()
         {
             //RMANFile rman = new RMANFile("F8487EDD0EE47547.manifest");
-            RMANFile rman = new RMANFile("9F4203E86C2DADF7.manifest");
+            RMANFile rman = new RMANFile("F8487EDD0EE47547.manifest");
         }
     }
 }

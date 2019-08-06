@@ -16,8 +16,8 @@ namespace Fantome.Libraries.League.IO.RMAN
         public List<RMANLanguage> Languages { get; private set; } = new List<RMANLanguage>();
         public List<RMANFileEntry> Files { get; private set; } = new List<RMANFileEntry>();
         public List<RMANDirectory> Directories { get; private set; } = new List<RMANDirectory>();
+        public List<RMANUnknown> Unknowns { get; private set; } = new List<RMANUnknown>();
         public List<RMANFileEntry> LocalizedFiles { get; private set; } = new List<RMANFileEntry>();
-        public List<RMANDirectory> LocalizedDirectories { get; private set; } = new List<RMANDirectory>();
 
         public RMANFile(string fileLocation) : this(File.OpenRead(fileLocation)) { }
 
@@ -41,6 +41,8 @@ namespace Fantome.Libraries.League.IO.RMAN
 
                 //Could possibly be Compression Type
                 byte unknown = br.ReadByte();
+                if (unknown != 0) throw new Exception("Unknown: " + unknown);
+
                 byte signatureType = br.ReadByte();
 
                 uint contentOffset = br.ReadUInt32();
@@ -61,7 +63,7 @@ namespace Fantome.Libraries.League.IO.RMAN
 
         private void ReadContent(byte[] data)
         {
-            //File.WriteAllBytes("content1", data);
+            //File.WriteAllBytes("F8487EDD0EE47547.content", data);
 
             using (BinaryReader br = new BinaryReader(new MemoryStream(data)))
             {
@@ -75,7 +77,7 @@ namespace Fantome.Libraries.League.IO.RMAN
                 uint filesOffset = (uint)br.BaseStream.Position + br.ReadUInt32();
                 uint directoriesOffset = (uint)br.BaseStream.Position + br.ReadUInt32();
                 uint keyHeaderOffset = (uint)br.BaseStream.Position + br.ReadUInt32();
-                uint localizedFilesOffset = (uint)br.BaseStream.Position + br.ReadUInt32();
+                uint unknownOffset = (uint)br.BaseStream.Position + br.ReadUInt32();
 
                 br.BaseStream.Seek(bundlesOffset, SeekOrigin.Begin);
                 uint bundleCount = br.ReadUInt32();
@@ -129,8 +131,18 @@ namespace Fantome.Libraries.League.IO.RMAN
                 uint unknownKeyHeader = br.ReadUInt32();
                 if (unknownKeyHeader != 0) throw new Exception("unknownKeyHeader: " + unknownKeyHeader);
 
-                br.BaseStream.Seek(localizedFilesOffset, SeekOrigin.Begin);
-                byte[] unknown = br.ReadBytes(44);
+                br.BaseStream.Seek(unknownOffset, SeekOrigin.Begin);
+                List<uint> unknowns = new List<uint>();
+                uint unknown1Count = br.ReadUInt32();
+                for(int i = 0; i < unknown1Count; i++)
+                {
+                    unknowns.Add(br.ReadUInt32()); //Very unlikely that these are offsets of any kind
+                }
+                for(int i = 0; i < unknown1Count; i++)
+                {
+                    this.Unknowns.Add(new RMANUnknown(br));
+                }
+
                 uint localizedFilesCount = br.ReadUInt32();
                 for(int i = 0; i < localizedFilesCount; i++)
                 {
@@ -139,22 +151,6 @@ namespace Fantome.Libraries.League.IO.RMAN
 
                     br.BaseStream.Seek(localizedFileOffset + returnOffset - 4, SeekOrigin.Begin);
                     this.LocalizedFiles.Add(new RMANFileEntry(br));
-
-                    if(i != localizedFilesCount - 1)
-                    {
-                        br.BaseStream.Seek(returnOffset, SeekOrigin.Begin);
-                    }
-                }
-
-                uint localizedDirectoryCount = br.ReadUInt32();
-                for(int i = 0; i < localizedDirectoryCount; i++)
-                {
-                    uint localizedDirectoryOffset = br.ReadUInt32();
-                    long returnOffset = br.BaseStream.Position;
-
-                    br.BaseStream.Seek(localizedDirectoryOffset + returnOffset - 4, SeekOrigin.Begin);
-                    this.LocalizedDirectories.Add(new RMANDirectory(br));
-                    br.BaseStream.Seek(returnOffset, SeekOrigin.Begin);
                 }
             }
         }

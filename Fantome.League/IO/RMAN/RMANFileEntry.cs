@@ -47,7 +47,9 @@ namespace Fantome.Libraries.League.IO.RMAN
             }
 
             this.FileSize = br.ReadUInt32();
+
             this.Permissions = br.ReadUInt32();
+            if (this.Permissions != 0) throw new Exception("Permissions: " + this.Permissions);
 
             if (structureSize > 36)
             {
