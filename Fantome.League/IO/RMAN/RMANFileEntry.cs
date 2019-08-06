@@ -71,11 +71,20 @@ namespace Fantome.Libraries.League.IO.RMAN
                 this.ChunkIDs.Add(br.ReadUInt64());
             }
 
+            long position2 = br.BaseStream.Position;
+
             br.BaseStream.Seek(nameOffset + 4 + position, SeekOrigin.Begin);
             this.Name = Encoding.ASCII.GetString(br.ReadBytes(br.ReadInt32()));
 
             br.BaseStream.Seek(linkOffset + 12 + position, SeekOrigin.Begin);
             this.Link = Encoding.ASCII.GetString(br.ReadBytes(br.ReadInt32()));
+
+            br.BaseStream.Seek(position2, SeekOrigin.Begin);
         }
+    }
+
+    public enum RMANFileEntryType
+    {
+        WAD = 2
     }
 }

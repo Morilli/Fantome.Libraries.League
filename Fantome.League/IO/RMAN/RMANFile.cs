@@ -16,7 +16,8 @@ namespace Fantome.Libraries.League.IO.RMAN
         public List<RMANLanguage> Languages { get; private set; } = new List<RMANLanguage>();
         public List<RMANFileEntry> Files { get; private set; } = new List<RMANFileEntry>();
         public List<RMANDirectory> Directories { get; private set; } = new List<RMANDirectory>();
-        public List<RMANFileEntry> Files2 { get; private set; } = new List<RMANFileEntry>();
+        public List<RMANFileEntry> LocalizedFiles { get; private set; } = new List<RMANFileEntry>();
+        public List<RMANDirectory> LocalizedDirectories { get; private set; } = new List<RMANDirectory>();
 
         public RMANFile(string fileLocation) : this(File.OpenRead(fileLocation)) { }
 
@@ -74,7 +75,7 @@ namespace Fantome.Libraries.League.IO.RMAN
                 uint filesOffset = (uint)br.BaseStream.Position + br.ReadUInt32();
                 uint directoriesOffset = (uint)br.BaseStream.Position + br.ReadUInt32();
                 uint keyHeaderOffset = (uint)br.BaseStream.Position + br.ReadUInt32();
-                uint unknownOffset = (uint)br.BaseStream.Position + br.ReadUInt32();
+                uint localizedFilesOffset = (uint)br.BaseStream.Position + br.ReadUInt32();
 
                 br.BaseStream.Seek(bundlesOffset, SeekOrigin.Begin);
                 uint bundleCount = br.ReadUInt32();
@@ -128,16 +129,31 @@ namespace Fantome.Libraries.League.IO.RMAN
                 uint unknownKeyHeader = br.ReadUInt32();
                 if (unknownKeyHeader != 0) throw new Exception("unknownKeyHeader: " + unknownKeyHeader);
 
-                br.BaseStream.Seek(unknownOffset, SeekOrigin.Begin);
+                br.BaseStream.Seek(localizedFilesOffset, SeekOrigin.Begin);
                 byte[] unknown = br.ReadBytes(44);
-                uint unknownCount = br.ReadUInt32();
-                for(int i = 0; i < unknownCount; i++)
+                uint localizedFilesCount = br.ReadUInt32();
+                for(int i = 0; i < localizedFilesCount; i++)
                 {
-                    uint unknownOffset2 = br.ReadUInt32();
+                    uint localizedFileOffset = br.ReadUInt32();
                     long returnOffset = br.BaseStream.Position;
 
-                    br.BaseStream.Seek(unknownOffset2 + returnOffset - 4, SeekOrigin.Begin);
-                    this.Files2.Add(new RMANFileEntry(br));
+                    br.BaseStream.Seek(localizedFileOffset + returnOffset - 4, SeekOrigin.Begin);
+                    this.LocalizedFiles.Add(new RMANFileEntry(br));
+
+                    if(i != localizedFilesCount - 1)
+                    {
+                        br.BaseStream.Seek(returnOffset, SeekOrigin.Begin);
+                    }
+                }
+
+                uint localizedDirectoryCount = br.ReadUInt32();
+                for(int i = 0; i < localizedDirectoryCount; i++)
+                {
+                    uint localizedDirectoryOffset = br.ReadUInt32();
+                    long returnOffset = br.BaseStream.Position;
+
+                    br.BaseStream.Seek(localizedDirectoryOffset + returnOffset - 4, SeekOrigin.Begin);
+                    this.LocalizedDirectories.Add(new RMANDirectory(br));
                     br.BaseStream.Seek(returnOffset, SeekOrigin.Begin);
                 }
             }
