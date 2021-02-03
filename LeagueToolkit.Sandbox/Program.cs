@@ -33,6 +33,19 @@ namespace LeagueToolkit.Sandbox
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Convert an old-format skl to a new format skl with this tool");
+            if (args.Length < 1)
+            {
+                Console.WriteLine("Syntax: skl-convert path/to/your/input.skl path/to/output.skl");
+                return;
+            }
+            Skeleton inputSkeleton = new(File.OpenRead(args[0]));
+
+            string outputFile = args.Length > 1 ? args[1] : Path.ChangeExtension(args[0], "new.skl");
+
+            inputSkeleton.Write(outputFile);
+            return;
+
             BinTree nn = new BinTree(@"C:\Users\Crauzer\Downloads\D373034A82E109D1.bin");
 
 
