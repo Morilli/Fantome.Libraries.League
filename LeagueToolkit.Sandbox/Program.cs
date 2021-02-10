@@ -33,10 +33,11 @@ namespace LeagueToolkit.Sandbox
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("skl-convert v0.2");
             Console.WriteLine("Convert an old-format skl to a new format skl with this tool");
             if (args.Length < 1)
             {
-                Console.WriteLine("Syntax: skl-convert path/to/your/input.skl path/to/output.skl");
+                Console.WriteLine("Syntax: skl-convert.exe path/to/your/input.skl [path/to/output.skl]");
                 return;
             }
             Skeleton inputSkeleton = new(File.OpenRead(args[0]));
